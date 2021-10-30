@@ -1,5 +1,3 @@
-import { JSONSchemaForNPMPackageJsonFiles } from '@schemastore/package';
-
 export type JestVersion =
   | 14
   | 15
@@ -25,16 +23,12 @@ export const detectJestVersion = (): JestVersion => {
   }
 
   try {
-    const jestPath = require.resolve('jest/package.json');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const jestVersion = require('child_process').execSync('jest --version', { encoding: 'utf-8' }).trim();
 
-    const jestPackageJson =
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      require(jestPath) as JSONSchemaForNPMPackageJsonFiles;
-
-    if (jestPackageJson.version) {
-      const [majorVersion] = jestPackageJson.version.split('.');
-
-      return (cachedJestVersion = parseInt(majorVersion, 10));
+    if (jestVersion) {
+      const [majorVersion] = jestVersion.split('.');
+      return cachedJestVersion = parseInt(majorVersion, 10);
     }
   } catch {}
 
